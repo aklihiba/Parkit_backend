@@ -1,1 +1,1 @@
-web: python RestAPI/manage.py runserver --port %PORT%
+web: python RestAPI/manage.py runserver 0.0.0.0:\$PORT
