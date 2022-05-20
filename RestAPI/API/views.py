@@ -1,9 +1,8 @@
-from django.shortcuts import render
 from rest_framework import viewsets
-from .serializers import ParkingSerializer
-from .models import parkings
-# from .models import User
-
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .serializers import ParkingSerializer, UserSerializer, ReservationSerializer
+from .models import parkings, Utilisateur, Reservation
 
 # Create your views here.
 
@@ -11,30 +10,38 @@ class ParkingViewSet(viewsets.ModelViewSet):
     queryset = parkings.objects.all().order_by('nom')
     serializer_class = ParkingSerializer
 
-    # @csrf_exempt
-    # def Parking_detail(request, pk):
     
-    #     try:
-    #         snippet = Snippet.objects.get(pk=pk)
-    #     except Snippet.DoesNotExist:
-    #         return HttpResponse(status=404)
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = Utilisateur.objects.all()
+    serializer_class = UserSerializer
 
-    #     if request.method == 'GET':
-    #         serializer = SnippetSerializer(snippet)
-    #         return JsonResponse(serializer.data)
+    @action(methods=['POST'], detail=True )
+    def connexion(self, request, pk):
+        email = request.data['email']
+        mdp = request.data['mdp']
+        print()
+        try:
+            user = Utilisateur.objects.get(userId = pk)
+            ser = UserSerializer(data = user)
+            if(user.email==email and user.mdp==mdp):
+                return Response(ser.data)
+            else:
+                return Response('false credentials')    
+        except Utilisateur.DoesNotExist:
+           return Response('user not found')
 
-    #     elif request.method == 'PUT':
-    #         data = JSONParser().parse(request)
-    #         serializer = SnippetSerializer(snippet, data=data)
-    #         if serializer.is_valid():
-    #             serializer.save()
-    #             return JsonResponse(serializer.data)
-    #         return JsonResponse(serializer.errors, status=400)
-
-    #     elif request.method == 'DELETE':
-    #         snippet.delete()
-    #         return HttpResponse(status=204)
-
-# class UserViewSet(viewsets.ModelViewSet):
-#     queryset = User.objects.get()
-#     serializer_class = ParkingSerializer
+class ReservationViewSet(viewsets.ModelViewSet):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+          
+    @action(methods=['GET'], detail=True )
+    def UserReservation(self, request, pk):
+    
+        try:
+            Reservations = Reservation.objects.all().filter(userId=pk)
+            serializer = ReservationSerializer(instance = Reservations, context={'request': request}, many=True)
+            
+            return Response(serializer.data)
+            
+        except Reservation.DoesNotExist:
+           return Response('this user has no reservations')      

@@ -20,26 +20,26 @@ class parkings(models.Model):
     def __str__(self):
         return self.nom
 
-# class User(models.Model):
-#     id = models.IntegerField(primary_key=True)
-#     nom = models.CharField(max_length=60)
-#     prenom = models.CharField(max_length=60)
-#     email = models.CharField(max_length=256)
-#     tel = models.CharField(max_length=10)
-#     password = models.CharField(max_length=256)
-#     photo = models.CharField(max_length=512)
+class Utilisateur(models.Model):
+    userId = models.IntegerField(primary_key=True)
+    nom = models.CharField(max_length=60)
+    prenom = models.CharField(max_length=60)
+    email = models.CharField(max_length=256)
+    tel = models.CharField(max_length=10)
+    mdp = models.CharField(max_length=256)
+    photo = models.CharField(max_length=512, blank=True)
 
-#     def __str__(self) -> str:
-#         return self.email
+    def __str__(self) -> str:
+        return self.email
 
-# class Reservation(models.Model):
-#     id = models.BigIntegerField(primary_key=True)
-#     user_id = models.ForeignKey(User, on_delete=models.CASCADE,default=None)
-#     parking_id = models.ForeignKey(Parking, on_delete=models.CASCADE,default=None)
-#     h_entree = models.DateTimeField()
-#     h_sortie = models.DateTimeField()
-#     code_QR = models.CharField(max_length=512) #link to the QR image
-#     num_place = models.CharField(max_length=10)
-
-#     def __str__(self) -> str:
-#         return '{} {} {}'.format(str(self.id),str(self.user_id), str(self.parking_id))
+class Reservation(models.Model):
+    ReservationId = models.IntegerField(primary_key=True)
+    userId = models.ForeignKey(Utilisateur, on_delete=models.CASCADE,default=None)
+    parkingId = models.ForeignKey(parkings, on_delete=models.CASCADE,default=None)
+    hEntree = models.DateTimeField()
+    hSortie = models.DateTimeField()
+    code_QR = models.CharField(max_length=512, blank=True) #link to the QR image
+    num_place = models.CharField(max_length=10)
+    prix = models.FloatField(default=100.0, blank= True)
+    def __str__(self) -> str:
+        return '{} {} {}'.format(str(self.id),str(self.user_id), str(self.parking_id))

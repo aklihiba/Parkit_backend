@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import  parkings
-# from .models import User
-# from .models import Reservation
+from .models import  Utilisateur, parkings, Reservation
+
 
 # Register your models here.
 admin.site.register(parkings)
-# admin.site.register(User)
-# admin.site.register(Reservation)
+admin.site.register(Utilisateur)
+admin.site.register(Reservation)
